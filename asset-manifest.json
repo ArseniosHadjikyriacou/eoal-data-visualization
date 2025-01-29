@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/visualization-react/static/css/main.6f80f017.css",
+    "main.js": "/visualization-react/static/js/main.7046db5e.js",
+    "index.html": "/visualization-react/index.html",
+    "main.6f80f017.css.map": "/visualization-react/static/css/main.6f80f017.css.map",
+    "main.7046db5e.js.map": "/visualization-react/static/js/main.7046db5e.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.6f80f017.css",
+    "static/js/main.7046db5e.js"
+  ]
+}
