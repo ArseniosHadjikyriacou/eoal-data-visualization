@@ -1,7 +1,7 @@
 import parseWorkBook from '../utils/spreadsheets'
 import '../styles/DisplayOptions.css'
 
-export default function DisplayOptions({keys,setKeys,setData}) {
+export default function DisplayOptions({keys,setKeys,setData,setChecked}) {
 
   function readUploadFile(e) {
     e.preventDefault();
@@ -26,16 +26,20 @@ export default function DisplayOptions({keys,setKeys,setData}) {
       return (
         <div className='checkbox-container' key={key}>
           <label className='checkbox-label' htmlFor={key}>{key}</label>
-          <input className='checkbox' type="checkbox" id={key} name={key} value={key}/> 
+          <input className='checkbox' type="checkbox" id={key} name='headings' value={key}/> 
         </div>
       )
     });
     return checkboxes;
   }
 
-  function handleCheckBox(e) {
-    console.log('checkbox clicked!')
+  function handleCheckBox(event) {
+    const formEl = event.currentTarget;
+    const formData = new FormData(formEl);
+    const checkedBoxes = formData.getAll('headings');
+    setChecked(checkedBoxes);
   }
+
 
   return (
     <>

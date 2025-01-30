@@ -20,7 +20,35 @@ ChartJS.register(
   Legend
 );
 
-export function LineGraph({keys,data}) {
+export function LineGraph({keys,data,checked}) {
+
+  const generateColours = ({ quantity = 1, shuffle = false, order = "0,360", offset = 0, saturation = 80, lightness = 50 }) => {
+    let colours = [];
+    for (let i = 0; i < quantity; i++) {
+        let hue;
+        if (order === "0,360") hue = ((360/quantity) * (quantity+i)) - 360;
+        if (order === "360,0") hue = (360/quantity) * (quantity-i);
+
+        hue += offset;
+
+        colours.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
+    }
+
+    if (shuffle) {
+        // uses the Fisher-Yates Shuffle to shuffle the colours
+        let currentIndex = colours.length, randomIndex;
+
+        while (currentIndex !== 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [colours[currentIndex], colours[randomIndex]] = [colours[randomIndex], colours[currentIndex]];
+        }
+    }
+
+    return colours;
+  };
+
+  const colors = generateColours({quantity: keys.length})
 
   const options = {
     responsive: true,
@@ -51,30 +79,36 @@ export function LineGraph({keys,data}) {
         },
       },
     },
-  }
+  };
 
   const lineChartData = {
     labels: data[keys[0]],
-    datasets: [
-      {
-        label: keys[2],
-        data: data[keys[2]],
-
-        // line options
-        borderWidth: 1,
-        borderColor: 'rgba(255, 0, 0, 1)',
-
-        // point options
-        pointRadius: 3,
-        pointHitRadius: 3,
-        pointBorderWidth: 1,
-        pointBorderColor: 'rgba(255, 0, 0, 1)',
-        pointBackgroundColor: 'rgba(255, 0, 0, 0.2)',
-
-        spanGaps: false,
-      },
-    ],
+    datasets: [],
   };
+
+  keys.forEach((key,index) => {
+    if (checked.includes(key)) {
+      lineChartData.datasets.push(
+        {
+          label: key,
+          data: data[key],
+  
+          // line options
+          borderWidth: 1,
+          borderColor: colors[index],
+  
+          // point options
+          pointRadius: 2,
+          pointHitRadius: 2,
+          pointBorderWidth: 1,
+          pointBorderColor: colors[index],
+          pointBackgroundColor: colors[index],
+  
+          spanGaps: true,
+        }
+      );
+    }
+  });
   // Plotting is sensitive to number format. Keep decimal (.) notation
 
 
