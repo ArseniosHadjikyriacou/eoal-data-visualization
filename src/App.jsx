@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { LineGraph } from './components/Line';
+import Header from './components/Header';
 import DisplayOptions from './components/DisplayOptions';
 import './styles/App.css'
 
@@ -12,8 +13,11 @@ export default function App() {
 
   return (
     <div className="App">
-      <DisplayOptions keys={keys} setKeys={setKeys} setData={setData} setChecked={setChecked} />
-      <LineGraph keys={keys} data={data} checked={checked} />
+      <Header />
+      <div className='main-app-container'>
+        <DisplayOptions keys={keys} setKeys={setKeys} setData={setData} setChecked={setChecked} />
+        <LineGraph keys={keys} data={data} checked={checked} />
+      </div>
     </div>
   )
 }

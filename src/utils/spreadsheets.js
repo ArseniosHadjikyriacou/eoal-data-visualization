@@ -1,14 +1,17 @@
 import * as xlsx from 'xlsx'
 
-export default function workbookToObject(data,sheetNumber) {
+export function sheetNames (byteData) {
+  return xlsx.read(byteData, { type: "array" }).SheetNames;
+}
+
+export function workbookToObject(byteData,sheetName) {
   // This function expects the first row to be data labels/headings 
   // All data columns must be labeled
   // The rest of the rows should be data
   // Sheet numbers start from 1
   // By default, all rows are parsed
 
-  const workbook = xlsx.read(data, { type: "array" });
-  const sheetName = workbook.SheetNames[sheetNumber-1];
+  const workbook = xlsx.read(byteData, { type: "array" });
   const worksheet = workbook.Sheets[sheetName];
 
   let headings = [];

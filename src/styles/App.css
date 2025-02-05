@@ -1,4 +1,9 @@
 body {
-  font-family: Inter,Arial;
-  margin: 10px;
+  margin: 0;
+  font-family: Inter, sans-serif;
+  background-color: #FAFAF8;
+}
+
+.main-app-container {
+  margin: 0px 15px 15px 15px;
 }
