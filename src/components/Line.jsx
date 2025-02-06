@@ -1,8 +1,12 @@
 import { Line } from 'react-chartjs-2'
+import { spacedColors } from '../utils/colors';
+import typeChecker from '../utils/typeCheck';
+import 'chartjs-adapter-date-fns';
 import { 
   Chart as ChartJS, 
   CategoryScale, 
   LinearScale, 
+  TimeScale,
   PointElement, 
   LineElement,
   Title,
@@ -13,6 +17,7 @@ import {
 ChartJS.register(
   CategoryScale,
   LinearScale, 
+  TimeScale,
   PointElement, 
   LineElement,
   Title,
@@ -20,94 +25,67 @@ ChartJS.register(
   Legend
 );
 
-export function LineGraph({keys,data,checked}) {
+export function LineGraph({data,xaxis,checked}) {
 
-  const generateColours = ({ quantity = 1, shuffle = false, order = "0,360", offset = 0, saturation = 80, lightness = 50 }) => {
-    let colours = [];
-    for (let i = 0; i < quantity; i++) {
-        let hue;
-        if (order === "0,360") hue = ((360/quantity) * (quantity+i)) - 360;
-        if (order === "360,0") hue = (360/quantity) * (quantity-i);
-
-        hue += offset;
-
-        colours.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
-    }
-
-    if (shuffle) {
-        // uses the Fisher-Yates Shuffle to shuffle the colours
-        let currentIndex = colours.length, randomIndex;
-
-        while (currentIndex !== 0) {
-            randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex--;
-            [colours[currentIndex], colours[randomIndex]] = [colours[randomIndex], colours[currentIndex]];
-        }
-    }
-
-    return colours;
-  };
-
-  const colors = generateColours({quantity: keys.length})
+  const dataTypeX = typeChecker(data[xaxis][0])
+  const colors = spacedColors(checked.length)
 
   const options = {
+    events: [], // static chart
     responsive: true,
     plugins: {
+      title: { display: false },
+      tooltip: { enabled: false }, // no tooltip when hovering
       legend: {
         position: "top",
-        labels: {
-          boxHeight: 0,
-        },
+        labels: { boxHeight: 0 },
       },
-      title: {
-        display: false,
-      }
     },
     scales: {
       x: {
+        type: dataTypeX, // linear, category or time
+        time: { unit: 'month' },
         ticks: {
           display: true,
-          autoSkip: false,
-          callback: function(val) {
-            return this.getLabelForValue(val).slice(0,2) === '01' ? this.getLabelForValue(val) : '';
-          },
+          // autoSkip: false,
+          // callback: function(val) {
+          //   return this.getLabelForValue(val).slice(0,2) === '01' ? this.getLabelForValue(val) : '';
+          // },
         },
-        grid: {
-          color: function(context) {
-            return context.tick.label.length > 0 ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0)';
-          },
-        },
+        // grid: {
+        //   color: function(context) {
+        //     return context.tick.label.length > 0 ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0)';
+        //   },
+        // },
       },
     },
   };
 
   const lineChartData = {
-    labels: data[keys[0]],
+    labels: data[xaxis],
     datasets: [],
   };
 
-  keys.forEach((key,index) => {
-    if (checked.includes(key)) {
-      lineChartData.datasets.push(
-        {
-          label: key,
-          data: data[key],
-  
-          // line options
-          borderWidth: 1,
-          borderColor: colors[index],
-  
-          // point options
-          pointRadius: 2,
-          pointHitRadius: 2,
-          pointBorderWidth: 1,
-          pointBorderColor: colors[index],
-          pointBackgroundColor: colors[index],
-  
-          spanGaps: true,
-        }
-      );
-    }
+  checked.forEach((key,index) => {
+    lineChartData.datasets.push(
+      {
+        label: key,
+        data: data[key],
+
+        // line options
+        borderWidth: 1,
+        borderColor: colors[index],
+
+        // point options
+        pointRadius: 0,
+        pointHitRadius: 2,
+        pointBorderWidth: 1,
+        pointBorderColor: colors[index],
+        pointBackgroundColor: colors[index],
+
+        spanGaps: true,
+      }
+    );
   });
   // Plotting is sensitive to number format. Keep decimal (.) notation
 

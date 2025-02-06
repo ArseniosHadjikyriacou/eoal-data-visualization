@@ -5,9 +5,13 @@ import '../styles/Header.css'
 export default function Header() {
   return (
     <header>
-      <img src={eoalLogo} alt="EOAL logo" className="eoal-logo"/>
+      <a href="https://eoal.org.cy/" target="_blank" rel="noopener noreferrer">
+        <img src={eoalLogo} alt="EOAL logo" className="eoal-logo"/>
+      </a>
       <h1>εοαλ data visualization tool</h1>
-      <img src={diginnLogo} alt="DiGiNN logo" className="diginn-logo"/>
+      <a href="https://www.diginn.eu/" target="_blank" rel="noopener noreferrer">
+        <img src={diginnLogo} alt="DiGiNN logo" className="diginn-logo"/>
+      </a>
     </header>
   )
 }

@@ -8,7 +8,6 @@ export function workbookToObject(byteData,sheetName) {
   // This function expects the first row to be data labels/headings 
   // All data columns must be labeled
   // The rest of the rows should be data
-  // Sheet numbers start from 1
   // By default, all rows are parsed
 
   const workbook = xlsx.read(byteData, { type: "array" });
@@ -16,8 +15,8 @@ export function workbookToObject(byteData,sheetName) {
 
   let headings = [];
   let colNum = 0;
-  while (Object.keys(worksheet).includes(colName(colNum)+'1')) {
-    headings.push(worksheet[colName(colNum)+'1'].w);
+  while (Object.keys(worksheet).includes(colChar(colNum)+'1')) {
+    headings.push(worksheet[colChar(colNum)+'1'].w);
     colNum++;
   }
   const arraysOfValues = Array.from(Array(headings.length), () => []);
@@ -37,7 +36,7 @@ export function workbookToObject(byteData,sheetName) {
   return [headings,datasetObject];
 }
 
-function colName(n) {
+function colChar(n) {
   var ordA = 'a'.charCodeAt(0);
   var ordZ = 'z'.charCodeAt(0);
   var len = ordZ - ordA + 1;

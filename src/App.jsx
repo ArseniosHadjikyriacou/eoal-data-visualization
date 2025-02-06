@@ -9,14 +9,16 @@ export default function App() {
 
   const [keys,setKeys] = useState([]);
   const [data,setData] = useState({});
+  const [xaxis,setXaxis] = useState('');
   const [checked,setChecked] = useState([]);
+  
 
   return (
     <div className="App">
       <Header />
       <div className='main-app-container'>
-        <DisplayOptions keys={keys} setKeys={setKeys} setData={setData} setChecked={setChecked} />
-        <LineGraph keys={keys} data={data} checked={checked} />
+        <DisplayOptions keys={keys} data={data} xaxis={xaxis} setXaxis={setXaxis} setKeys={setKeys} setData={setData} setChecked={setChecked} />
+        { (checked.length > 0 && xaxis.length > 0) && <LineGraph data={data} xaxis={xaxis} checked={checked} /> }
       </div>
     </div>
   )

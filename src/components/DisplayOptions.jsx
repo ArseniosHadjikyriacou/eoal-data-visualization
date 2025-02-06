@@ -1,11 +1,14 @@
-import { useState } from 'react';
-import { sheetNames } from '../utils/spreadsheets'
+import { useState,useRef } from 'react';
+import { sheetNames,workbookToObject } from '../utils/spreadsheets'
+import typeChecker from '../utils/typeCheck';
 import '../styles/DisplayOptions.css'
 
-export default function DisplayOptions({keys,setKeys,setData,setChecked}) {
+export default function DisplayOptions({keys,data,xaxis,setXaxis,setKeys,setData,setChecked}) {
   
-  const [sheets,setSheets] = useState([]); //sheet names
+  const [sheets,setSheets] = useState([]); // sheet names
   const [workBook,setWorkbook] = useState([]); // workbook data
+  const sheetSelectElem = useRef(null);
+  const xaxisSelectElem = useRef(null);
 
   function readUploadSheets(e) {
     e.preventDefault();
@@ -16,21 +19,40 @@ export default function DisplayOptions({keys,setKeys,setData,setChecked}) {
           const byteData = e.target.result;
           setSheets(sheetNames(byteData));
           setWorkbook(byteData);
+          setKeys([]);
+          if (sheetSelectElem.current) {
+            sheetSelectElem.current.value = "";
+          }
+          if (xaxisSelectElem.current) {
+            xaxisSelectElem.current.value = "";
+          }
       };
       reader.readAsArrayBuffer(e.target.files[0]);
     }
   }
 
-  // handleSelectSheet(e) {
-  //   // created object keys are the table headings
-  //   // keys point to arrays of data of equal length
-  //   const [keys,sheetObject] = workbookToObject(workBook,e);
-  //   setKeys(keys);
-  //   setData(sheetObject);
-  // }
+  function handleSelectSheet(e) {
+    // created object keys are the table headings
+    // keys point to arrays of data of equal length
+    const [keys,sheetObject] = workbookToObject(workBook,e.target.value);
+    setKeys(keys);
+    setData(sheetObject);
+    setXaxis('');
+    setChecked([]);
+    if (xaxisSelectElem.current) {
+      xaxisSelectElem.current.value = "";
+    }
+  }
+
+  function handleSelectXaxis(e) {
+    setXaxis(e.target.value);
+  }
 
   function checkboxElements() {
-    const checkboxes = keys.slice(2).map(key => {
+
+    const filteredKeys = keys.filter(key => (key !== xaxis && typeChecker(data[key][0]) === 'linear'));
+
+    const checkboxes = filteredKeys.map(key => {
       return (
         <div className='checkbox-container' key={key}>
           <label className='checkbox-label' htmlFor={key}>{key}</label>
@@ -38,7 +60,9 @@ export default function DisplayOptions({keys,setKeys,setData,setChecked}) {
         </div>
       )
     });
+
     return checkboxes;
+
   }
 
   function handleCheckBox(event) {
@@ -68,21 +92,30 @@ export default function DisplayOptions({keys,setKeys,setData,setChecked}) {
 
         {sheets.length > 0 && 
         <form className='sheet-form'>
-          <label htmlFor="sheetSelect">Please select a worksheet:</label> <br/>
-          <select id="sheetSelect" name="sheetSelect" defaultValue="">
-            <option value="" disabled>-- Select a worksheet --</option>
+          <label htmlFor="sheetSelect">Select the worksheet:</label> <br/>
+          <select id="sheetSelect" name="sheetSelect" defaultValue=""  onChange={handleSelectSheet} ref={sheetSelectElem}>
+            <option value="" disabled>-- Select worksheet --</option>
             {sheets.map(sheet => <option value={sheet} key={sheet}>{sheet}</option>)}
           </select>
         </form>}
 
-        <a className='dummy-data' href="./Melbourne-WWTP.xlsx" download>Download Dummy Data</a>
+        {keys.length > 0 &&
+        <form className='x-axis-form'>
+          <label htmlFor="x-axisSelect">Select the x-axis:</label> <br/>
+          <select id="x-axisSelect" name="x-axisSelect" defaultValue="" onChange={handleSelectXaxis} ref={xaxisSelectElem}>
+            <option value="" disabled>-- Select x-axis --</option>
+            {keys.map(key => <option value={key} key={key}>{key}</option>)}
+          </select>
+        </form>}
+
+        <a className='dummy-data' href="./DummyData.xlsx" download>Download Dummy Data</a>
 
       </div>
 
-      Filters (datasets and dates):
+      {(keys.length > 0 && xaxis.length > 0) && 
       <form className='checkbox-form' onChange={handleCheckBox}>
         {checkboxElements()}
-      </form>
+      </form>}
 
     </>
   )
