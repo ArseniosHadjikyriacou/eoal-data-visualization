@@ -25,10 +25,24 @@ ChartJS.register(
   Legend
 );
 
-export function LineGraph({data,xaxis,checked}) {
+export function LineGraph({data,xaxis,checked,rangeRef,timeRef}) {
 
   const dataTypeX = typeChecker(data[xaxis][0])
   const colors = spacedColors(checked.length)
+  const [lower,upper] = rangeRef.current.value.split('-').map(index => Number(index))
+
+  function timeUnit() {
+    if (timeRef.current) {
+      if (timeRef.current.value === 'day') {
+        return 'day';
+      } else if(timeRef.current.value === 'month') {
+        return 'month';
+      } else if(timeRef.current.value === 'year') {
+        return 'year';
+      }
+    }
+    return 'month'
+  }
 
   const options = {
     events: [], // static chart
@@ -38,31 +52,38 @@ export function LineGraph({data,xaxis,checked}) {
       tooltip: { enabled: false }, // no tooltip when hovering
       legend: {
         position: "top",
-        labels: { boxHeight: 0 },
-      },
+        font: { size: 20},
+        labels: { boxHeight: 0, color: 'black' },
+      }
     },
     scales: {
       x: {
         type: dataTypeX, // linear, category or time
-        time: { unit: 'month' },
-        ticks: {
-          display: true,
-          // autoSkip: false,
-          // callback: function(val) {
-          //   return this.getLabelForValue(val).slice(0,2) === '01' ? this.getLabelForValue(val) : '';
-          // },
+        time: { 
+          unit: timeUnit(),
+          displayFormats: {
+            day: 'MMM dd',
+            month: 'MMM yyyy',
+            year: 'yyyy'
+          }
         },
-        // grid: {
-        //   color: function(context) {
-        //     return context.tick.label.length > 0 ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0)';
-        //   },
-        // },
+        title: {
+          display: true,
+          text: xaxis,
+          padding: { top: 0 },
+          font: { size: 24},
+          color: 'black'
+        },
+        ticks: { color: "black" }
       },
-    },
+      y: {
+        ticks: { color: "black" }
+      }
+    }
   };
 
   const lineChartData = {
-    labels: data[xaxis],
+    labels: data[xaxis].slice(lower-1,upper-1),
     datasets: [],
   };
 
@@ -70,7 +91,7 @@ export function LineGraph({data,xaxis,checked}) {
     lineChartData.datasets.push(
       {
         label: key,
-        data: data[key],
+        data: data[key].slice(lower-1,upper-1),
 
         // line options
         borderWidth: 1,
@@ -87,7 +108,6 @@ export function LineGraph({data,xaxis,checked}) {
       }
     );
   });
-  // Plotting is sensitive to number format. Keep decimal (.) notation
 
 
   return <Line options={options} data={lineChartData} />

@@ -3,7 +3,7 @@ import { sheetNames,workbookToObject } from '../utils/spreadsheets'
 import typeChecker from '../utils/typeCheck';
 import '../styles/DisplayOptions.css'
 
-export default function DisplayOptions({keys,data,xaxis,setXaxis,setKeys,setData,setChecked}) {
+export default function DisplayOptions({keys,data,xaxis,setXaxis,setKeys,setData,setChecked,rangeRef,timeRef}) {
   
   const [sheets,setSheets] = useState([]); // sheet names
   const [workBook,setWorkbook] = useState([]); // workbook data
@@ -20,6 +20,8 @@ export default function DisplayOptions({keys,data,xaxis,setXaxis,setKeys,setData
           setSheets(sheetNames(byteData));
           setWorkbook(byteData);
           setKeys([]);
+          setXaxis('');
+          setChecked([]);
           if (sheetSelectElem.current) {
             sheetSelectElem.current.value = "";
           }
@@ -92,8 +94,8 @@ export default function DisplayOptions({keys,data,xaxis,setXaxis,setKeys,setData
 
         {sheets.length > 0 && 
         <form className='sheet-form'>
-          <label htmlFor="sheetSelect">Select the worksheet:</label> <br/>
-          <select id="sheetSelect" name="sheetSelect" defaultValue=""  onChange={handleSelectSheet} ref={sheetSelectElem}>
+          <label htmlFor="sheetSelect">Select worksheet:</label> <br/>
+          <select id="sheetSelect" name="sheetSelect" defaultValue="" onChange={handleSelectSheet} ref={sheetSelectElem}>
             <option value="" disabled>-- Select worksheet --</option>
             {sheets.map(sheet => <option value={sheet} key={sheet}>{sheet}</option>)}
           </select>
@@ -101,7 +103,7 @@ export default function DisplayOptions({keys,data,xaxis,setXaxis,setKeys,setData
 
         {keys.length > 0 &&
         <form className='x-axis-form'>
-          <label htmlFor="x-axisSelect">Select the x-axis:</label> <br/>
+          <label htmlFor="x-axisSelect">Select x-axis:</label> <br/>
           <select id="x-axisSelect" name="x-axisSelect" defaultValue="" onChange={handleSelectXaxis} ref={xaxisSelectElem}>
             <option value="" disabled>-- Select x-axis --</option>
             {keys.map(key => <option value={key} key={key}>{key}</option>)}
@@ -113,9 +115,41 @@ export default function DisplayOptions({keys,data,xaxis,setXaxis,setKeys,setData
       </div>
 
       {(keys.length > 0 && xaxis.length > 0) && 
+      <form className='range-form'>
+        <label htmlFor="range">Data index range:</label>
+        <input 
+          type="text" 
+          id="range" 
+          name="range"
+          ref={rangeRef}
+          className='range-input'
+          placeholder={`1-${data[xaxis].length}`} 
+          defaultValue={`1-${data[xaxis].length}`}>
+        </input>
+
+        {(typeChecker(data[xaxis][0]) === 'time') &&
+        <>
+        <label htmlFor="time">Time intervals:</label>
+        <input 
+          type="text" 
+          id="time" 
+          name="time-intervals"
+          ref={timeRef}
+          className='time-input'
+          placeholder='day or month or year'
+          defaultValue=''>
+        </input>
+        </>}
+
+      </form>}
+
+      {(keys.length > 0 && xaxis.length > 0) &&
+      <>
+      Datasets to plot:
       <form className='checkbox-form' onChange={handleCheckBox}>
         {checkboxElements()}
-      </form>}
+      </form>
+      </>}
 
     </>
   )
