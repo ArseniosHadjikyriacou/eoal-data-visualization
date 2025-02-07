@@ -1,13 +1,15 @@
 {
   "files": {
-    "main.css": "/visualization-react/static/css/main.6f80f017.css",
-    "main.js": "/visualization-react/static/js/main.6836acb3.js",
+    "main.css": "/visualization-react/static/css/main.fe55e0ad.css",
+    "main.js": "/visualization-react/static/js/main.9ff88dca.js",
+    "static/media/diginn-logo.png": "/visualization-react/static/media/diginn-logo.89c6edf1e1b3aa0f2fa9.png",
+    "static/media/eoal-logo.svg": "/visualization-react/static/media/eoal-logo.23099979e5153bc269ad423c1370fcae.svg",
     "index.html": "/visualization-react/index.html",
-    "main.6f80f017.css.map": "/visualization-react/static/css/main.6f80f017.css.map",
-    "main.6836acb3.js.map": "/visualization-react/static/js/main.6836acb3.js.map"
+    "main.fe55e0ad.css.map": "/visualization-react/static/css/main.fe55e0ad.css.map",
+    "main.9ff88dca.js.map": "/visualization-react/static/js/main.9ff88dca.js.map"
   },
   "entrypoints": [
-    "static/css/main.6f80f017.css",
-    "static/js/main.6836acb3.js"
+    "static/css/main.fe55e0ad.css",
+    "static/js/main.9ff88dca.js"
   ]
 }
