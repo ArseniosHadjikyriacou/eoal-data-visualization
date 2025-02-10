@@ -1,6 +1,5 @@
 import { Line } from 'react-chartjs-2'
 import { spacedColors } from '../utils/colors';
-import typeChecker from '../utils/typeCheck';
 import 'chartjs-adapter-date-fns';
 import { 
   Chart as ChartJS, 
@@ -25,24 +24,26 @@ ChartJS.register(
   Legend
 );
 
-export function LineGraph({data,xaxis,checked,rangeRef,timeRef}) {
+export function LineGraph({data,xaxis,checked,dateKey,fromDate,toDate,timeUnit}) {
 
-  const dataTypeX = typeChecker(data[xaxis][0])
-  const colors = spacedColors(checked.length)
-  const [lower,upper] = rangeRef.current.value.split('-').map(index => Number(index))
+  const colors = spacedColors(checked.length);
+  const date1 = new Date(fromDate);
+  const date2 = new Date(toDate);
+  const geDate1 = [];
+  const leDate2 = [];
 
-  function timeUnit() {
-    if (timeRef.current) {
-      if (timeRef.current.value === 'day') {
-        return 'day';
-      } else if(timeRef.current.value === 'month') {
-        return 'month';
-      } else if(timeRef.current.value === 'year') {
-        return 'year';
-      }
+  data[dateKey].forEach((date,i) => {
+    const dateObject = new Date(date)
+    if (dateObject >= date1) {
+      geDate1.push(i);
     }
-    return 'month'
-  }
+    if (dateObject <= date2) {
+      leDate2.push(i);
+    }
+  });
+
+  const lower = Math.min(...geDate1);
+  const upper = Math.max(...leDate2)+1;
 
   const options = {
     events: [], // static chart
@@ -58,9 +59,9 @@ export function LineGraph({data,xaxis,checked,rangeRef,timeRef}) {
     },
     scales: {
       x: {
-        type: dataTypeX, // linear, category or time
+        type: 'time', // linear, category or time
         time: { 
-          unit: timeUnit(),
+          unit: timeUnit,
           displayFormats: {
             day: 'MMM dd',
             month: 'MMM yyyy',
@@ -69,7 +70,7 @@ export function LineGraph({data,xaxis,checked,rangeRef,timeRef}) {
         },
         title: {
           display: true,
-          text: xaxis,
+          text: dateKey,
           padding: { top: 0 },
           font: { size: 24},
           color: 'black'
@@ -83,7 +84,7 @@ export function LineGraph({data,xaxis,checked,rangeRef,timeRef}) {
   };
 
   const lineChartData = {
-    labels: data[xaxis].slice(lower-1,upper-1),
+    labels: data[dateKey].slice(lower,upper),
     datasets: [],
   };
 
@@ -91,7 +92,7 @@ export function LineGraph({data,xaxis,checked,rangeRef,timeRef}) {
     lineChartData.datasets.push(
       {
         label: key,
-        data: data[key].slice(lower-1,upper-1),
+        data: data[key].slice(lower,upper),
 
         // line options
         borderWidth: 1,

@@ -34,36 +34,34 @@
   font-size: 16px;
 }
 
-.sheet-form, .x-axis-form {
+.sheet-form {
   line-height: 22px;
   text-align: left;
   width: 150px;
   min-width: 150px
 }
 
-.sheet-form, .x-axis-form > select {
+.sheet-form > select {
   width: 100%;
   max-width: 200px;
 }
 
-.range-form {
+.date-form {
   display: flex;
   align-items: center;
+  justify-content: left;
   gap: 10px;
   margin-bottom: 30px;
   flex-wrap: nowrap;
 }
 
-.range-form > label {
+.date-form > label {
   white-space: nowrap;
 }
 
-.range-input {
-  width: 100px;
-}
-
-.time-input {
-  width: 150px;
+.date-form > input {
+  width: 120px;
+  min-width: 119px;
 }
 
 .checkbox-form {

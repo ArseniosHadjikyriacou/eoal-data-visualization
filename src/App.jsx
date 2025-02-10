@@ -1,4 +1,4 @@
-import { useState,useRef } from 'react';
+import { useState } from 'react';
 import { LineGraph } from './components/Line';
 import Header from './components/Header';
 import DisplayOptions from './components/DisplayOptions';
@@ -9,10 +9,11 @@ export default function App() {
 
   const [keys,setKeys] = useState([]);
   const [data,setData] = useState({});
-  const [xaxis,setXaxis] = useState('');
   const [checked,setChecked] = useState([]);
-  const rangeRef = useRef(null);
-  const timeRef = useRef(null);
+  const [dateKey,setDateKey] = useState('date');
+  const [fromDate,setFromDate] = useState('');
+  const [toDate,setToDate] = useState('');
+  const [timeUnit,setTimeUnits] = useState('month');
   
 
   return (
@@ -23,12 +24,17 @@ export default function App() {
       <div className='main-app-container'>
 
         <DisplayOptions 
-          keys={keys} data={data} xaxis={xaxis} 
-          setXaxis={setXaxis} setKeys={setKeys} setData={setData} setChecked={setChecked}
-          rangeRef={rangeRef} timeRef={timeRef} />
+          keys={keys} data={data} dateKey={dateKey} fromDate={fromDate} toDate={toDate}
+          setKeys={setKeys} setData={setData} setChecked={setChecked} 
+          setDateKey={setDateKey} setFromDate={setFromDate} setToDate={setToDate} setTimeUnits={setTimeUnits}
+        />
 
-        { (checked.length > 0 && xaxis.length > 0) && 
-        <LineGraph data={data} xaxis={xaxis} checked={checked} rangeRef={rangeRef} timeRef={timeRef} /> }
+        { checked.length > 0 && 
+        <LineGraph 
+          data={data} checked={checked} 
+          dateKey={dateKey} fromDate={fromDate} toDate={toDate} timeUnit={timeUnit}
+        /> 
+        }
 
       </div>
 

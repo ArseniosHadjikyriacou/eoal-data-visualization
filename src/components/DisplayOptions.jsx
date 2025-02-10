@@ -3,12 +3,11 @@ import { sheetNames,workbookToObject } from '../utils/spreadsheets'
 import typeChecker from '../utils/typeCheck';
 import '../styles/DisplayOptions.css'
 
-export default function DisplayOptions({keys,data,xaxis,setXaxis,setKeys,setData,setChecked,rangeRef,timeRef}) {
+export default function DisplayOptions({keys,data,dateKey,fromDate,toDate,setKeys,setData,setChecked,setDateKey,setFromDate,setToDate,setTimeUnits}) {
   
   const [sheets,setSheets] = useState([]); // sheet names
   const [workBook,setWorkbook] = useState([]); // workbook data
   const sheetSelectElem = useRef(null);
-  const xaxisSelectElem = useRef(null);
 
   function readUploadSheets(e) {
     e.preventDefault();
@@ -20,14 +19,12 @@ export default function DisplayOptions({keys,data,xaxis,setXaxis,setKeys,setData
           setSheets(sheetNames(byteData));
           setWorkbook(byteData);
           setKeys([]);
-          setXaxis('');
           setChecked([]);
           if (sheetSelectElem.current) {
             sheetSelectElem.current.value = "";
           }
-          if (xaxisSelectElem.current) {
-            xaxisSelectElem.current.value = "";
-          }
+          setFromDate('');
+          setToDate('');
       };
       reader.readAsArrayBuffer(e.target.files[0]);
     }
@@ -39,20 +36,19 @@ export default function DisplayOptions({keys,data,xaxis,setXaxis,setKeys,setData
     const [keys,sheetObject] = workbookToObject(workBook,e.target.value);
     setKeys(keys);
     setData(sheetObject);
-    setXaxis('');
     setChecked([]);
-    if (xaxisSelectElem.current) {
-      xaxisSelectElem.current.value = "";
-    }
-  }
-
-  function handleSelectXaxis(e) {
-    setXaxis(e.target.value);
+    keys.forEach(key => {
+      if (key.toUpperCase() === 'DATE') {
+        setDateKey(key);
+        setFromDate(sheetObject[key][0]);
+        setToDate(sheetObject[key].slice(-1)[0]);
+      }
+    });
   }
 
   function checkboxElements() {
 
-    const filteredKeys = keys.filter(key => (key !== xaxis && typeChecker(data[key][0]) === 'linear'));
+    const filteredKeys = keys.filter(key => (key !== dateKey && typeChecker(data[key][0]) === 'linear'));
 
     const checkboxes = filteredKeys.map(key => {
       return (
@@ -73,7 +69,6 @@ export default function DisplayOptions({keys,data,xaxis,setXaxis,setKeys,setData
     const checkedBoxes = formData.getAll('headings');
     setChecked(checkedBoxes);
   }
-
 
 
   return (
@@ -101,49 +96,48 @@ export default function DisplayOptions({keys,data,xaxis,setXaxis,setKeys,setData
           </select>
         </form>}
 
-        {keys.length > 0 &&
-        <form className='x-axis-form'>
-          <label htmlFor="x-axisSelect">Select x-axis:</label> <br/>
-          <select id="x-axisSelect" name="x-axisSelect" defaultValue="" onChange={handleSelectXaxis} ref={xaxisSelectElem}>
-            <option value="" disabled>-- Select x-axis --</option>
-            {keys.map(key => <option value={key} key={key}>{key}</option>)}
-          </select>
-        </form>}
-
         <a className='dummy-data' href="./DummyData.xlsx" download>Download Dummy Data</a>
 
       </div>
 
-      {(keys.length > 0 && xaxis.length > 0) && 
-      <form className='range-form'>
-        <label htmlFor="range">Data index range:</label>
-        <input 
-          type="text" 
-          id="range" 
-          name="range"
-          ref={rangeRef}
-          className='range-input'
-          placeholder={`1-${data[xaxis].length}`} 
-          defaultValue={`1-${data[xaxis].length}`}>
-        </input>
+      {keys.length > 0 && 
+      <form className='date-form'>
 
-        {(typeChecker(data[xaxis][0]) === 'time') &&
-        <>
-        <label htmlFor="time">Time intervals:</label>
+        <label htmlFor="date1">From:</label>
         <input 
-          type="text" 
-          id="time" 
-          name="time-intervals"
-          ref={timeRef}
-          className='time-input'
-          placeholder='day or month or year'
-          defaultValue=''>
-        </input>
-        </>}
+          type="date" 
+          name='date1' 
+          id='date1'
+          value={fromDate}
+          min={data[dateKey][0]}
+          max={toDate}
+          placeholder="YYYY-MM-DD"
+          onChange={e => setFromDate(e.target.value)}
+        />
+
+        <label htmlFor="date2">To:</label>
+        <input 
+          type="date" 
+          name='date2' 
+          id='date2' 
+          value={toDate}
+          min={fromDate}
+          max={data[dateKey].slice(-1)[0]}
+          placeholder="YYYY-MM-DD"
+          onChange={e => setToDate(e.target.value)}
+        />
+
+        <label htmlFor="time-units">Select time interval:</label> <br/>
+        <select id="time-units" name="time-units" defaultValue="month" onChange={e => setTimeUnits(e.target.value)}>
+          <option value="" disabled>-- Select time interval --</option>
+          <option value='day'>Day</option>
+          <option value='month'>Month</option>
+          <option value='year'>Year</option>
+        </select>
 
       </form>}
 
-      {(keys.length > 0 && xaxis.length > 0) &&
+      {keys.length > 0 &&
       <>
       Datasets to plot:
       <form className='checkbox-form' onChange={handleCheckBox}>
