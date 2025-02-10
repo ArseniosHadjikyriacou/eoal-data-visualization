@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/visualization-react/static/css/main.fe55e0ad.css",
-    "main.js": "/visualization-react/static/js/main.9ff88dca.js",
-    "static/media/diginn-logo.png": "/visualization-react/static/media/diginn-logo.89c6edf1e1b3aa0f2fa9.png",
-    "static/media/eoal-logo.svg": "/visualization-react/static/media/eoal-logo.23099979e5153bc269ad423c1370fcae.svg",
-    "index.html": "/visualization-react/index.html",
-    "main.fe55e0ad.css.map": "/visualization-react/static/css/main.fe55e0ad.css.map",
-    "main.9ff88dca.js.map": "/visualization-react/static/js/main.9ff88dca.js.map"
+    "main.css": "/eoal-data-visualization/static/css/main.05fbb12d.css",
+    "main.js": "/eoal-data-visualization/static/js/main.6d055c3a.js",
+    "static/media/diginn-logo.png": "/eoal-data-visualization/static/media/diginn-logo.89c6edf1e1b3aa0f2fa9.png",
+    "static/media/eoal-logo.svg": "/eoal-data-visualization/static/media/eoal-logo.23099979e5153bc269ad423c1370fcae.svg",
+    "index.html": "/eoal-data-visualization/index.html",
+    "main.05fbb12d.css.map": "/eoal-data-visualization/static/css/main.05fbb12d.css.map",
+    "main.6d055c3a.js.map": "/eoal-data-visualization/static/js/main.6d055c3a.js.map"
   },
   "entrypoints": [
-    "static/css/main.fe55e0ad.css",
-    "static/js/main.9ff88dca.js"
+    "static/css/main.05fbb12d.css",
+    "static/js/main.6d055c3a.js"
   ]
 }
