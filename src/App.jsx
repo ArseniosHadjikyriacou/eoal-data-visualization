@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { LineGraph } from './components/Line';
 import Header from './components/Header';
 import DisplayOptions from './components/DisplayOptions';
+import Analytics from './components/Analytics';
+import { LineGraph } from './components/Line';
 import './styles/App.css'
 
 
@@ -31,6 +32,13 @@ export default function App() {
 
         { checked.length > 0 && 
         <LineGraph 
+          data={data} checked={checked} 
+          dateKey={dateKey} fromDate={fromDate} toDate={toDate} timeUnit={timeUnit}
+        /> 
+        }
+
+        { checked.length > 0 && 
+        <Analytics
           data={data} checked={checked} 
           dateKey={dateKey} fromDate={fromDate} toDate={toDate} timeUnit={timeUnit}
         /> 

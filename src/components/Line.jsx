@@ -24,7 +24,7 @@ ChartJS.register(
   Legend
 );
 
-export function LineGraph({data,xaxis,checked,dateKey,fromDate,toDate,timeUnit}) {
+export function LineGraph({data,checked,dateKey,fromDate,toDate,timeUnit}) {
 
   const colors = spacedColors(checked.length);
   const date1 = new Date(fromDate);

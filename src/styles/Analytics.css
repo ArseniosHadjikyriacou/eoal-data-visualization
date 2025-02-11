@@ -1,0 +1,17 @@
+th {
+  text-align: middle;
+}
+
+caption {
+  text-align: left;
+}
+
+table, th, td {
+  border: 1px solid white;
+  border-collapse: collapse;
+  text-align: middle;
+}
+th, td {
+  background-color: rgb(154, 202, 150);
+  padding: 6px;
+}
